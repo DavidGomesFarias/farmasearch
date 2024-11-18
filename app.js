@@ -93,4 +93,6 @@ app.get('/dados/:cidade', (req, res) => {
 //   });
 // });
 
-module.exports = app;
+app.listen(80, () => {
+  console.log('Servidor rodando na porta 3000');
+});
