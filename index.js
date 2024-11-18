@@ -1,6 +1,24 @@
+// Variável para controlar se uma requisição está em andamento
+let requisicaoEmAndamento = false;
+let debounceTimer;
+
 function updateItemList(cidade) {
-  const cidadeFormatada = cidade.replace(/\s+/g, '');
-  fetch(`https://farmasearch.onrender.com/dados/${cidadeFormatada}`) // Ajuste a URL conforme necessário
+  const cidadeFormatada = cidade.replace(/\s+/g, ''); // Remove espaços
+  
+  // Se já existe uma requisição em andamento, não faça outra
+  if (requisicaoEmAndamento) {
+    console.log(`Já há uma requisição em andamento para a cidade ${cidade}.`);
+    return;
+  }
+
+  // Marca que uma requisição está em andamento
+  requisicaoEmAndamento = true;
+
+  // Limpa a lista de itens antes de fazer a requisição para garantir dados frescos
+  const itemList = document.querySelector('#itemList');
+  itemList.innerHTML = ''; // Limpa a lista existente
+
+  fetch(`https://farmasearch.onrender.com/dados/${cidadeFormatada}`)
     .then(response => {
       if (!response.ok) {
         throw new Error(`Erro na requisição: ${response.statusText}`);
@@ -8,76 +26,79 @@ function updateItemList(cidade) {
       return response.json(); // Converte a resposta para JSON
     })
     .then(data => {
-      console.log('Dados recebidos:', data); // Verifique a estrutura
-      const itemList = document.querySelector('#itemList');
-      itemList.innerHTML = ''; // Limpar a lista existente
-
-      // Criação dos itens da lista
-      data.forEach(item => {
-        const li = document.createElement('li');
-        const pDisponibilidade = document.createElement('p');
-        const pDataPedido = document.createElement('p');
-        const pDataPrevisao = document.createElement('p');
-
-        pDisponibilidade.textContent = item.disponibilidade || 'Sem informações';
-        pDataPedido.textContent = `Data do pedido: ${item.data_pedido}` || 'Sem informações';
-        pDataPrevisao.textContent = `Previsão de chegada: ${item.data_previsao}` || 'Sem informações';
-
-        if (item.disponibilidade === 'Disponível') {
-          pDisponibilidade.classList.add('disponivel');
-          pDataPedido.style.display = 'none';
-          pDataPrevisao.style.display = 'none';
-          console.log(`Item ${item.nome_remedio} está disponível.`);
-        } else if (item.disponibilidade === 'Indisponível') {
-          pDisponibilidade.classList.add('indisponivel');
-          console.log(`Item ${item.nome_remedio} está indisponível.`);
-        } else {
-          console.log(`Item ${item.nome_remedio} tem status desconhecido.`);
-        }
-
-        li.textContent = item.nome_remedio || 'Item sem texto'; // Defina um texto padrão se 'nome_remedio' for indefinido
-        li.dataset.id = item.id || '0'; // Defina um ID padrão se 'id' for indefinido
-        itemList.appendChild(li);
-        li.appendChild(pDisponibilidade);
-        li.appendChild(pDataPedido);
-        li.appendChild(pDataPrevisao);
-      });
-
-      // Adicionando a funcionalidade de pesquisa para os remédios
-      const searchInput2 = document.getElementById('searchInput2');
-      searchInput2.addEventListener('keyup', function () {
-        const input = this.value.toLowerCase();
-        const items = itemList.querySelectorAll('li');
-
-        items.forEach(function (item) {
-          const text = item.textContent.toLowerCase();
-          if (text.includes(input)) {
-            item.style.display = 'block'; // Mostra o item
-          } else {
-            item.style.display = 'none'; // Esconde o item
-          }
-        });
-      });
+      console.log('Dados recebidos:', data);
+      renderItems(data); // Atualiza a lista com os novos dados
     })
-    .catch(error => console.error('Erro:', error));
+    .catch(error => {
+      console.error('Erro:', error);
+    })
+    .finally(() => {
+      // Ao terminar a requisição (seja sucesso ou erro), libera o controle para novas requisições
+      requisicaoEmAndamento = false;
+    });
 }
 
-document.getElementById('searchInput').addEventListener('keyup', function () {
-  const input = this.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Pega o valor do input e converte para minúsculas
-  const items = document.querySelectorAll('.itemList li'); // Seleciona todos os itens da lista
+// Função para renderizar os itens da cidade
+function renderItems(data) {
+  const itemList = document.querySelector('#itemList');
+  itemList.innerHTML = ''; // Limpa a lista existente
 
-  items.forEach(function (item) {
-    const text = item.textContent.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Pega o texto de cada item e converte para minúsculas
-    if (text.includes(input)) { // Verifica se o texto do item contém o que foi digitado
-      item.style.display = 'block'; // Mostra o item se ele contiver o texto
-    } else {
-      item.style.display = 'none'; // Esconde o item se não contiver o texto
+  data.forEach(item => {
+    const li = document.createElement('li');
+    const pDisponibilidade = document.createElement('p');
+    const pDataPedido = document.createElement('p');
+    const pDataPrevisao = document.createElement('p');
+
+    pDisponibilidade.textContent = item.disponibilidade || 'Sem informações';
+    pDataPedido.textContent = `Data do pedido: ${item.data_pedido}` || 'Sem informações';
+    pDataPrevisao.textContent = `Previsão de chegada: ${item.data_previsao}` || 'Sem informações';
+
+    if (item.disponibilidade === 'Disponível') {
+      pDisponibilidade.classList.add('disponivel');
+      pDataPedido.style.display = 'none';
+      pDataPrevisao.style.display = 'none';
+    } else if (item.disponibilidade === 'Indisponível') {
+      pDisponibilidade.classList.add('indisponivel');
     }
-  });
 
+    li.textContent = item.nome_remedio || 'Item sem texto';
+    li.dataset.id = item.id || '0'; // ID do item
+    itemList.appendChild(li);
+    li.appendChild(pDisponibilidade);
+    li.appendChild(pDataPedido);
+    li.appendChild(pDataPrevisao);
+  });
+}
+
+// Função de debounce
+function debounce(func, delay) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(func, delay);
+}
+
+// Adicionando a funcionalidade de pesquisa para os remédios
+document.getElementById('searchInput').addEventListener('keyup', function () {
+  const input = this.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // A função de debounce vai ser chamada aqui
+  debounce(() => {
+    const items = document.querySelectorAll('.itemList li');
+    
+    items.forEach(function (item) {
+      const text = item.textContent.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      if (text.includes(input)) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }, 200); // Delay de 500ms para garantir que o usuário terminou de digitar
+
+  // A parte de "click" no item de cidade
+  const items = document.querySelectorAll('.itemList li');
   items.forEach(function (item) {
     item.addEventListener('click', () => {
-      // Limpa os itens visíveis antes de mostrar o novo conteúdo
+      // Limpa os itens antes de mostrar o novo conteúdo
       items.forEach(function (i) {
         i.style.display = 'none';
       });
@@ -93,9 +114,10 @@ document.getElementById('searchInput').addEventListener('keyup', function () {
         <ul id="itemList" style="display: flex;">
         </ul>
       </div>`;
+
       const itemList = document.querySelector('#itemList');
       itemList.innerHTML = '';
-      updateItemList(cidade);
+      updateItemList(cidade); // Requisição para carregar dados atualizados
       document.getElementById('searchInput').value = textNormal;
     });
   });
