@@ -35,11 +35,11 @@ db.connect(err => {
 
  // Funções CRUD
 
-app.get('/', (req, res) => {
+app.get('/adm', (req, res) => {
     res.sendFile(path.join(__dirname, '/', 'index-adm.html'));
 });
 
-app.get('/senha', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/', 'index-senha.html'));
 });
 
