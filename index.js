@@ -106,3 +106,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     });
   });
 });
+
+const app = require('./app');
+
+module.exports = app;
