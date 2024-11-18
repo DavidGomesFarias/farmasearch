@@ -214,7 +214,7 @@ function updateItemList(cidade) {
               nova_data_previsao: novaDataPrevisao
             }
 
-            fetch(`http://localhost:3001/dados/${itemId}`, {
+            fetch(`https://farmasearch-1.onrender.com/dados/${itemId}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -316,7 +316,7 @@ function updateItemList(cidade) {
 
         function apagarRemedio() {
             const cidadeFormatada = cidade3.replace(/\s+/g, '');
-            fetch(`http://localhost:3001/dados/${cidadeFormatada}/${itemDeleteId}`, {
+            fetch(`https://farmasearch-1.onrender.com/dados/${cidadeFormatada}/${itemDeleteId}`, {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
@@ -527,7 +527,7 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
            data_previsao: dataPrevisao
          };
 
-         fetch('http://localhost:3001/dados', {
+         fetch('https://farmasearch-1.onrender.com/dados', {
                method: 'POST',
                headers: {
                  'Content-Type': 'application/json',
@@ -679,7 +679,7 @@ document.querySelector('.btnConfirmar').addEventListener('click', (event) => {
         document.getElementById('myModal').style.display = 'flex';
   };
 
-  fetch('http://localhost:3001/dados', {
+  fetch('https://farmasearch-1.onrender.com/dados', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
