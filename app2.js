@@ -36,7 +36,7 @@ db.connect(err => {
  // Funções CRUD
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/', 'index.html'));
+    res.sendFile(path.join(__dirname, '/', 'index-adm.html'));
 });
 
 app.get('/dados/:cidade', (req, res) => {
