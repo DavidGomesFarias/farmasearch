@@ -7,7 +7,7 @@ localStorage.clear()
 
 function updateItemList(cidade) {
   const cidadeFormatada = cidade.replace(/\s+/g, '');
-  fetch(`http://localhost:3001/dados/${cidadeFormatada}`) // Ajuste a URL conforme necessário
+  fetch(`https://farmasearch-1.onrender.com/dados/${cidadeFormatada}`) // Ajuste a URL conforme necessário
     .then(response => {
       if (!response.ok) {
         throw new Error(`Erro na requisição: ${response.statusText}`);
