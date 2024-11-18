@@ -5,7 +5,7 @@ const path = require('path');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public2')));
+app.use(express.static(path.join(__dirname, '/')));
 
 const db = mysql.createConnection({
   host: '195.201.241.251',
@@ -33,7 +33,12 @@ db.connect(err => {
 
 
 
-  // Funções CRUD
+ // Funções CRUD
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/', 'index.html'));
+});
+
 app.get('/dados/:cidade', (req, res) => {
   const cidade = req.params.cidade;
 
