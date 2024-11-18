@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public2')));
 
 const db = mysql.createConnection({
-  host: 'localhost',
+  host: '195.201.241.251',
   user: 'fariasdi_david',
   password: 'Davidgomes@123',
   database: 'fariasdi_davidDB'
@@ -140,6 +140,6 @@ app.delete('/dados/:cidade/:id', (req, res) => {
 
 
 
-app.listen(3001, () => {
+app.listen(80, () => {
   console.log('Servidor rodando na porta 3001');
 });
