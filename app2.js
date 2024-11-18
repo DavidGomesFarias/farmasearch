@@ -39,6 +39,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/', 'index-adm.html'));
 });
 
+app.get('/senha', (req, res) => {
+    res.sendFile(path.join(__dirname, '/', 'index-senha.html'));
+});
+
 app.get('/dados/:cidade', (req, res) => {
   const cidade = req.params.cidade;
 
