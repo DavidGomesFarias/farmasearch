@@ -93,7 +93,8 @@ document.getElementById('searchInput').addEventListener('keyup', function () {
         <ul id="itemList" style="display: flex;">
         </ul>
       </div>`;
-
+      const itemList = document.querySelector('#itemList');
+      itemList.innerHTML = '';
       updateItemList(cidade);
       document.getElementById('searchInput').value = textNormal;
     });
