@@ -68,6 +68,34 @@ function renderItems(data) {
     li.appendChild(pDataPedido);
     li.appendChild(pDataPrevisao);
   });
+
+  document.getElementById('searchInput2').addEventListener('keyup', function() {
+        const input = this.value.toLowerCase();
+        const items = itemList.querySelectorAll('li');
+
+
+        // Os itens comentados são para fala que não achou nenhum remedio caso o usuário escreva algum remédio não encontrado.
+
+        
+        // let found = false;
+        // const itemList2 = document.querySelector('#itemList');
+        // const nenhumRemedio = document.createElement('p')
+        // nenhumRemedio.textContent = 'Nenhum remédio foi encontrado com esse nome!'
+        items.forEach(function(item) {
+          const text = item.textContent.toLowerCase();
+          if (text.includes(input)) {
+            item.style.display = 'flex';
+            // found = true;
+          } else {
+            item.style.display = 'none';
+            // found = false;
+          }
+
+          // if(found == false) {
+          //   itemList.appendChild(nenhumRemedio);
+          // }
+        });
+      });
 }
 
 // Função de debounce
