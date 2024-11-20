@@ -9,8 +9,8 @@ app.use(express.static(path.join(__dirname, '/')));
 
 const db = mysql.createConnection({
   host: '195.201.241.251',
-  user: 'fariasdi_david',
-  password: 'Davidgomes@123',
+  user: 'fariasdi_visualizador',
+  password: 'visualizador@123',
   database: 'fariasdi_davidDB'
 });
 
